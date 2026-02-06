@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mkulima Link Marketplace</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-success">
+  <div class="container">
+    <span class="navbar-brand">🌾 Mkulima Link Marketplace</span>
+  </div>
+</nav>
+
+<div class="container my-5">
+  <h3>Available Produce</h3>
+  <div id="produce-list" class="row"></div>
+</div>
+
+<!-- BUY MODAL -->
+<div class="modal fade" id="buyModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Place Order</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input id="buyerName" class="form-control mb-2" placeholder="Your Name">
+        <input id="buyerPhone" class="form-control mb-2" placeholder="Phone Number">
+        <input id="orderQuantity" class="form-control mb-2" placeholder="Quantity">
+        <input type="hidden" id="farmerPhone">
+        <input type="hidden" id="cropType">
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="placeOrder()">Confirm Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const API = "http://localhost:3000";
+let modal = new bootstrap.Modal(document.getElementById("buyModal"));
+
+// LOAD PRODUCE
+fetch(`${API}/api/produce`)
+  .then(res => res.json())
+  .then(data => {
+    const list = document.getElementById("produce-list");
+
+    if (data.produce.length === 0) {
+      list.innerHTML = "<p>No produce available 🌱</p>";
+      return;
+    }
+
+    data.produce.forEach(p => {
+      list.innerHTML += `
+        <div class="col-md-4 mb-3">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5>${p.cropType}</h5>
+              <p><b>Farmer:</b> ${p.farmerName}</p>
+              <p><b>Location:</b> ${p.location}</p>
+              <p><b>Available:</b> ${p.quantity}</p>
+              <p><b>Price:</b> KES ${p.price}</p>
+
+              <button class="btn btn-success btn-sm"
+                onclick="openBuy('${p.farmerPhone}', '${p.cropType}')">
+                Buy
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  });
+
+// OPEN BUY MODAL
+function openBuy(farmerPhone, cropType) {
+  document.getElementById("farmerPhone").value = farmerPhone;
+  document.getElementById("cropType").value = cropType;
+  modal.show();
+}
+
+// PLACE ORDER
+function placeOrder() {
+  const payload = {
+    buyerName: document.getElementById("buyerName").value,
+    buyerPhone: document.getElementById("buyerPhone").value,
+    farmerPhone: document.getElementById("farmerPhone").value,
+    cropType: document.getElementById("cropType").value,
+    quantity: document.getElementById("orderQuantity").value
+  };
+
+  fetch(`${API}/api/orders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    modal.hide();
+  })
+  .catch(() => alert("Order failed"));
+}
+</script>
+
+</body>
+</html>

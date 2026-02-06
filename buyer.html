@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Buyer Dashboard - MkulimaLink</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>🛒 Buyer Dashboard</h1>
+
+  <h3>🌽 Available Farm Produce</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Farmer</th>
+        <th>Crop</th>
+        <th>Quantity</th>
+        <th>Price (KES)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="market-table">
+      <tr><td colspan="5">Loading produce...</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h3>📦 My Orders</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Crop</th>
+        <th>Quantity</th>
+        <th>Farmer</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="my-orders-table">
+      <tr><td colspan="5">Loading your orders...</td></tr>
+    </tbody>
+  </table>
+
+  <br>
+  <button onclick="logout()">Logout</button>
+
+  <script src="script.js"></script>
+</body>
+</html>

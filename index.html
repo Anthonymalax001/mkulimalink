@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mkulima Link - Connect Farmers to Markets</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-tractor"></i> Mkulima Link
+        </a>
+        <div class="nav-links">
+            <a href="#how-it-works">How It Works</a>
+            <a href="#farmers">For Farmers</a>
+            <a href="#buyers">For Buyers</a>
+            <a href="register.html" class="btn btn-success">Join Now</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Connect Kenyan Farmers Directly to Markets</h1>
+        <p>Reduce waste, increase profits, and streamline logistics with our platform</p>
+        <div class="cta-buttons">
+            <a href="#farmers" class="btn btn-lg btn-success">
+                <i class="fas fa-seedling"></i> I'm a Farmer
+            </a>
+            <a href="#buyers" class="btn btn-lg btn-outline-success">
+                <i class="fas fa-store"></i> I'm a Buyer
+            </a>
+        </div>
+        <div class="ussd-box">
+            <p><strong>No smartphone? No problem!</strong></p>
+            <code>xxxx</code>
+            <p>Dial this USSD code on any phone</p>
+        </div>
+    </div>
+</section>
+
+<!-- ====== LIVE MARKET BOARD ====== -->
+<section class="live-market" id="live-market">
+  <div class="container">
+    <h2>📡 LIVE MARKET RIGHT NOW</h2>
+    <p class="subtitle">See what's available, who needs what, and available trucks</p>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('produce')">Available Produce</button>
+      <button class="tab-btn" onclick="showTab('trucks')">Available Trucks</button>
+      <button class="tab-btn" onclick="showTab('buyers')">Buyers Needing</button>
+    </div>
+    
+    <!-- PRODUCE TAB -->
+    <div class="tab-content active" id="produce-tab">
+      <div class="live-item">
+        <div class="item-header">
+          <h3>🥕 Carrots - 300kg</h3>
+          <span class="badge available">AVAILABLE NOW</span>
+        </div>
+        <p>📍 <strong>Location:</strong> Nyeri</p>
+        <p>💰 <strong>Price:</strong> KSh 65/kg</p>
+        <p>👨‍🌾 <strong>Farmer:</strong> John Mwangi</p>
+        <div class="item-actions">
+          <button class="btn btn-sm btn-success" onclick="buyItem('carrots')">BUY NOW</button>
+          <button class="btn btn-sm btn-outline" onclick="contactFarmer('john')">CONTACT</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TRUCKS TAB -->
+    <div class="tab-content" id="trucks-tab">
+      <div class="live-item">
+        <div class="item-header">
+          <h3>🚛 10-ton Truck</h3>
+          <span class="badge available">AVAILABLE</span>
+        </div>
+        <p>📍 <strong>Location:</strong> Embu</p>
+        <p>💰 <strong>Price:</strong> KSh 120/km</p>
+        <p>👨‍✈️ <strong>Driver:</strong> Omondi</p>
+        <div class="item-actions">
+          <button class="btn btn-sm btn-success" onclick="bookTruck('truck1')">BOOK</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- BUYERS TAB -->
+    <div class="tab-content" id="buyers-tab">
+      <div class="live-item">
+        <div class="item-header">
+          <h3>🏪 Nakuru Market</h3>
+          <span class="badge urgent">URGENT</span>
+        </div>
+        <p>📦 <strong>Needs:</strong> Potatoes - 1,000kg</p>
+        <p>💰 <strong>Offering:</strong> KSh 70/kg</p>
+        <div class="item-actions">
+          <button class="btn btn-sm btn-success" onclick="sellToBuyer('nakuru')">I HAVE THIS</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- AUTO MATCH -->
+    <div class="auto-match">
+      <h3>🔗 AUTO-MATCH FOUND!</h3>
+      <div class="match-card">
+        <div class="match-column">
+          <h4>👨‍🌾 FARMER</h4>
+          <p><strong>John</strong></p>
+          <p>500kg tomatoes</p>
+        </div>
+        <div class="match-column">
+          <h4>🛒 BUYER</h4>
+          <p><strong>Nakumatt</strong></p>
+          <p>Needs 400kg</p>
+        </div>
+        <div class="match-column">
+          <h4>🚚 TRUCK</h4>
+          <p><strong>Truck 012</strong></p>
+        </div>
+        <div class="match-connect">
+          <button class="btn btn-success" onclick="connectMatch()">CONNECT ALL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ====== END LIVE MARKET ====== -->
+
+<!-- Features Section -->
+<section id="how-it-works" class="features">
+    <div class="container">
+        <h2>How It Works</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">1</div>
+                <h3>List Your Produce</h3>
+                <p>Farmers list crops via app, website, or USSD</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">2</div>
+                <h3>Find Buyers</h3>
+                <p>Hotels, markets, schools find fresh produce</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">3</div>
+                <h3>Arrange Transport</h3>
+                <p>Verified transporters deliver goods</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">4</div>
+                <h3>Get Paid</h3>
+                <p>Secure M-Pesa payments on delivery</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FARMER FORM ================= -->
+<section id="farmers" class="container my-5">
+  <h2 class="text-success mb-3">👨‍🌾 Farmer: List Your Produce</h2>
+  <form id="farmer-form" class="card p-4 shadow">
+    <input class="form-control mb-3" type="text" id="farmer-name" placeholder="Your Name" required />
+    <input class="form-control mb-3" type="text" id="produce" placeholder="Produce (e.g. Maize)" required />
+    <input class="form-control mb-3" type="number" id="quantity" placeholder="Quantity (kg)" required />
+    <input class="form-control mb-3" type="text" id="location" placeholder="Location" required />
+    <button class="btn btn-success" type="submit">List Produce</button>
+  </form>
+</section>
+
+<!-- ================= BUYER FORM ================= -->
+<section id="buyers" class="container my-5">
+  <h2 class="text-success mb-3">🛒 Buyer: Place Order</h2>
+  <form id="buyer-form" class="card p-4 shadow">
+    <input class="form-control mb-3" type="text" id="buyer-name" placeholder="Buyer Name" required />
+    <input class="form-control mb-3" type="text" id="item" placeholder="Item" required />
+    <input class="form-control mb-3" type="number" id="amount" placeholder="Amount (KSh)" required />
+    <button class="btn btn-success" type="submit">Place Order</button>
+  </form>
+</section>
+
+<!-- ================= MPESA FORM ================= -->
+<section class="container my-5">
+  <h2 class="text-success mb-3">📲 M-Pesa Payment (Simulation)</h2>
+  <form id="mpesa-form" class="card p-4 shadow">
+    <input class="form-control mb-3" type="text" id="phone" placeholder="Phone Number" required />
+    <input class="form-control mb-3" type="number" id="pay-amount" placeholder="Amount (KSh)" required />
+    <button class="btn btn-success" type="submit">Pay Now</button>
+  </form>
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p class="text-center">© 2025 Mkulima Link. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/nonpm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function showTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // Show selected tab
+    document.getElementById(tabName + '-tab').classList.add('active');
+
+    // Activate clicked button
+    event.target.classList.add('active');
+  }
+
+  function buyItem(item) {
+    alert("Buying: " + item);
+  }
+
+  function contactFarmer(name) {
+    alert("Contacting farmer: " + name);
+  }
+
+  function bookTruck(truck) {
+    alert("Booking truck: " + truck);
+  }
+
+  function callDriver(driver) {
+    alert("Calling driver: " + driver);
+  }
+
+  function sellToBuyer(buyer) {
+    alert("Selling to: " + buyer);
+  }
+
+  function contactBuyer(buyer) {
+    alert("Contacting buyer: " + buyer);
+  }
+
+  function connectMatch() {
+    alert("Connecting farmer, buyer, and truck!");
+  }
+</script>
+</body>
+</html>

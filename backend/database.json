@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "name": "System Admin",
+      "phone": "0712345678",
+      "email": "admin@mkulima.com",
+      "role": "Admin",
+      "location": "Nairobi",
+      "password": "admin123",
+      "approved": true
+    }
+  ],
+  "produce": [],
+  "orders": []
+}

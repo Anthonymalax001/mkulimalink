@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Farmer Dashboard - MkulimaLink</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>🌾 Farmer Dashboard</h1>
+  <p id="welcome">Welcome Farmer</p>
+
+  <hr>
+
+  <h3>Add Produce</h3>
+  <form id="farmer-form">
+    <input type="text" id="cropType" placeholder="Crop Type (e.g. Maize)" required><br><br>
+    <input type="number" id="quantity" placeholder="Quantity" required><br><br>
+    <input type="number" id="price" placeholder="Price per unit (KES)" required><br><br>
+    <button type="submit">Add Produce</button>
+  </form>
+
+  <hr>
+
+  <h3>📦 Incoming Orders</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Buyer</th>
+        <th>Phone</th>
+        <th>Crop</th>
+        <th>Quantity</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="orders-table">
+      <tr><td colspan="7">Loading orders...</td></tr>
+    </tbody>
+  </table>
+
+  <br>
+  <button onclick="logout()">Logout</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
