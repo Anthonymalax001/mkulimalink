@@ -37,6 +37,93 @@ const AT = africastalking({
 
 const sms = AT.SMS;
 
+const DEFAULT_ADMIN = {
+  name: "System Admin",
+  phone: "0796244313",
+  email: "admin@mkulima.com",
+  password: "Malax001",
+  role: "Admin",
+  location: "Nairobi"
+};
+
+async function initializeDatabase() {
+  try {
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS users (
+         id SERIAL PRIMARY KEY,
+         name TEXT NOT NULL,
+         phone TEXT NOT NULL UNIQUE,
+         email TEXT,
+         password TEXT NOT NULL,
+         role TEXT NOT NULL,
+         location TEXT,
+         idnumber TEXT,
+         croptype TEXT,
+         approved BOOLEAN NOT NULL DEFAULT false,
+         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+       )`
+    );
+
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS produce (
+         id SERIAL PRIMARY KEY,
+         farmer_phone TEXT NOT NULL,
+         croptype TEXT NOT NULL,
+         quantity INTEGER NOT NULL,
+         price INTEGER NOT NULL,
+         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+       )`
+    );
+
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS orders (
+         id SERIAL PRIMARY KEY,
+         buyer_name TEXT NOT NULL,
+         buyer_national_id TEXT,
+         buyer_phone TEXT NOT NULL,
+         farmer_phone TEXT NOT NULL,
+         croptype TEXT NOT NULL,
+         quantity INTEGER NOT NULL,
+         status TEXT NOT NULL DEFAULT 'PENDING',
+         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+       )`
+    );
+
+    const existingAdmin = await pool.query(
+      "SELECT 1 FROM users WHERE role='Admin' LIMIT 1"
+    );
+
+    if (!existingAdmin.rows.length) {
+      const normalizedAdminPhone = normalizePhone(DEFAULT_ADMIN.phone);
+
+      if (!normalizedAdminPhone) {
+        throw new Error("Invalid default admin phone format");
+      }
+
+      await pool.query(
+        `INSERT INTO users (name, phone, email, password, role, location, approved)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          DEFAULT_ADMIN.name,
+          normalizedAdminPhone,
+          DEFAULT_ADMIN.email,
+          DEFAULT_ADMIN.password,
+          DEFAULT_ADMIN.role,
+          DEFAULT_ADMIN.location,
+          true
+        ]
+      );
+
+      console.log("✅ Default admin user seeded");
+    }
+
+    console.log("✅ Database initialization complete");
+  } catch (err) {
+    console.error("DATABASE INIT ERROR:", err);
+    throw err;
+  }
+}
+
 /* ================= REGISTER ================= */
 app.post("/api/register", async (req, res) => {
   try {
@@ -105,8 +192,13 @@ app.post("/api/login", async (req, res) => {
 
 /* ================= ADMIN ================= */
 app.get("/api/admin/pending-farmers", async (req, res) => {
-  const result = await pool.query("SELECT * FROM users WHERE role='Farmer' AND approved=false");
-  res.json({ farmers: result.rows });
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE role='Farmer' AND approved=false");
+    res.json({ farmers: result.rows });
+  } catch (err) {
+    console.error("PENDING FARMERS ERROR:", err);
+    res.status(500).json({ message: "Error loading pending farmers" });
+  }
 });
 
 app.post("/api/admin/approve-farmer", async (req, res) => {
@@ -134,10 +226,15 @@ app.post("/api/admin/approve-farmer", async (req, res) => {
 });
 
 app.get("/api/admin/approved-users", async (req, res) => {
-  const result = await pool.query(
-    "SELECT name, phone, email, role, location FROM users WHERE approved=true ORDER BY name"
-  );
-  res.json({ users: result.rows });
+  try {
+    const result = await pool.query(
+      "SELECT name, phone, email, role, location FROM users WHERE approved=true ORDER BY name"
+    );
+    res.json({ users: result.rows });
+  } catch (err) {
+    console.error("APPROVED USERS ERROR:", err);
+    res.status(500).json({ message: "Error loading approved users" });
+  }
 });
 
 /* ================= ADD PRODUCE ================= */
@@ -160,8 +257,13 @@ app.post("/api/farmer/add-produce", async (req, res) => {
 
 /* ================= MARKETPLACE ================= */
 app.get("/api/produce", async (req, res) => {
-  const result = await pool.query("SELECT * FROM produce ORDER BY id DESC");
-  res.json({ produce: result.rows });
+  try {
+    const result = await pool.query("SELECT * FROM produce ORDER BY id DESC");
+    res.json({ produce: result.rows });
+  } catch (err) {
+    console.error("PRODUCE ERROR:", err);
+    res.status(500).json({ message: "Error loading produce" });
+  }
 });
 
 /* ================= ORDERS ================= */
@@ -192,23 +294,49 @@ app.post("/api/orders", async (req, res) => {
 });
 
 app.get("/api/buyer/orders/:phone", async (req, res) => {
-  const normalized = normalizePhone(req.params.phone);
-  const result = await pool.query("SELECT * FROM orders WHERE buyer_phone=$1 ORDER BY id DESC", [normalized]);
-  res.json({ orders: result.rows });
+  try {
+    const normalized = normalizePhone(req.params.phone);
+    const result = await pool.query("SELECT * FROM orders WHERE buyer_phone=$1 ORDER BY id DESC", [normalized]);
+    res.json({ orders: result.rows });
+  } catch (err) {
+    console.error("BUYER ORDERS ERROR:", err);
+    res.status(500).json({ message: "Error loading buyer orders" });
+  }
 });
 
 app.get("/api/farmer/orders/:phone", async (req, res) => {
-  const normalized = normalizePhone(req.params.phone);
-  const result = await pool.query("SELECT * FROM orders WHERE farmer_phone=$1 ORDER BY id DESC", [normalized]);
-  res.json({ orders: result.rows });
+  try {
+    const normalized = normalizePhone(req.params.phone);
+    const result = await pool.query("SELECT * FROM orders WHERE farmer_phone=$1 ORDER BY id DESC", [normalized]);
+    res.json({ orders: result.rows });
+  } catch (err) {
+    console.error("FARMER ORDERS ERROR:", err);
+    res.status(500).json({ message: "Error loading farmer orders" });
+  }
 });
 
 app.put("/api/farmer/order-status", async (req, res) => {
-  await pool.query("UPDATE orders SET status=$1 WHERE id=$2", [req.body.status, req.body.orderId]);
-  res.json({ message: "Order updated" });
+  try {
+    await pool.query("UPDATE orders SET status=$1 WHERE id=$2", [req.body.status, req.body.orderId]);
+    res.json({ message: "Order updated" });
+  } catch (err) {
+    console.error("UPDATE ORDER ERROR:", err);
+    res.status(500).json({ message: "Error updating order" });
+  }
 });
 
 /* ================= START SERVER ================= */
-app.listen(3000, () => {
-  console.log("✅ Server running on http://localhost:3000");
-});
+async function startServer() {
+  try {
+    await initializeDatabase();
+
+    app.listen(3000, () => {
+      console.log("✅ Server running on http://localhost:3000");
+    });
+  } catch (err) {
+    console.error("STARTUP ERROR:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
